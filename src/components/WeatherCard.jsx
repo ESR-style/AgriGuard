@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import WeatherIcon from './WeatherIcon.jsx';
+import LoadingSpinner from './LoadingSpinner.jsx'; // Import the new component
 
 export default function WeatherCard() {
   const [weather, setWeather] = useState(null);
@@ -58,7 +59,7 @@ export default function WeatherCard() {
     }
   }, []);
 
-  if (loading) return <div className="text-black font-extrabold">Loading...</div>;
+  if (loading) return <LoadingSpinner />; // Use the new loading spinner
   if (error) return <div className="text-white">Error: {error}</div>;
 
   return (
