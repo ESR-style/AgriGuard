@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, ScatterChart, Scatter, ComposedChart, Area, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
-import Navbar from '../components/Navbar'; // Import Navbar
-import WeatherCard from '../components/WeatherCard'; // Import WeatherCard
+import Navbar from '../components/Navbar'; 
 
 const App = () => {
   const [chartData, setChartData] = useState([]);
