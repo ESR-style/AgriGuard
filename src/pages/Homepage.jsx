@@ -7,8 +7,8 @@ const Homepage = () => {
     <div>
       <Navbar />
       <div className='flex flex-col items-center m-10'>
-        <div className='w-full '>
-          <WeatherCard />
+        <div className='w-full h-20 '>
+          <WeatherCard className/>
         </div>
         {/* Placeholder for future icons */}
         <div className='w-full md:w-1/2 flex flex-wrap justify-center'>

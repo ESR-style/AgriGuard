@@ -62,23 +62,23 @@ export default function WeatherCard() {
   if (error) return <div className="text-white">Error: {error}</div>;
 
   return (
-    <div className="relative bg-black text-white p-6 rounded-lg shadow-lg w-full flex flex-col md:flex-row" style={{ marginRight: '10px' }}>
-      <div className="w-full p-4 bg-green-700 md:bg-black rounded-lg">
-        <h1 className="text-4xl mb-2 md:text-white">Weather in {weather.name}</h1>
+    <div className="relative bg-black text-white p-4 rounded-lg shadow-lg w-full flex flex-col md:flex-row" style={{ marginRight: '10px' }}>
+      <div className="w-full p-2 bg-green-700 md:bg-black rounded-lg">
+        <h1 className="text-2xl mb-2 md:text-white">Weather in {weather.name}</h1>
         <div className="flex justify-center mb-4">
-          <WeatherIcon weather={weather.weather[0]} size="text-[6rem] md:text-[12rem]" />
+          <WeatherIcon weather={weather.weather[0]} size="text-[3rem] md:text-[6rem]" />
         </div>
-        <p className="text-4xl md:text-6xl">{weather.main.temp}°C</p>
-        <p className="text-xl md:text-2xl">Humidity: {weather.main.humidity}%</p>
-        <p className="text-xl md:text-2xl">Wind Speed: {weather.wind.speed} m/s</p>
+        <p className="text-2xl md:text-3xl">{weather.main.temp}°C</p>
+        <p className="text-lg md:text-xl">Humidity: {weather.main.humidity}%</p>
+        <p className="text-lg md:text-xl">Wind Speed: {weather.wind.speed} m/s</p>
       </div>
-      <div className="w-full p-4 bg-green-700 rounded-lg hidden md:block">
-        <h2 className="text-2xl mb-4 text-white">Upcoming Weather</h2>
+      <div className="w-full p-2 bg-green-700 rounded-lg hidden md:block">
+        <h2 className="text-xl mb-4 text-white">Upcoming Weather</h2>
         <div className="space-y-2">
           {forecast.list.slice(0, 3).map((item, index) => (
             <div key={index} className="bg-green-500 p-2 rounded-lg shadow-md flex items-center justify-between">
               <div className="flex items-center">
-                <WeatherIcon weather={item.weather[0]} size="text-3xl" />
+                <WeatherIcon weather={item.weather[0]} size="text-2xl" />
                 <p className="ml-2 text-white">{new Date(item.dt * 1000).toLocaleString()}</p>
               </div>
               <p className="text-lg text-white">{item.main.temp}°C</p>
