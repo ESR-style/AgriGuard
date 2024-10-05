@@ -14,6 +14,7 @@ import CropSuggestion from './pages/CropSuggestion.jsx'
 import Chatbot from './pages/Chatbot.jsx'
 import CropsData from './pages/CropsData.jsx'
 import Connect from './pages/Connect.jsx'
+import Gallery from './pages/Gallery.jsx'
 
 const router = createBrowserRouter([
   {
@@ -56,6 +57,10 @@ const router = createBrowserRouter([
   {
     path: '/Expert',
     element: <Connect/>
+  },
+  {
+    path: '/gallery',
+    element: <Gallery />
   }
 ])
 
