@@ -10,6 +10,7 @@ import DisasterAlerts from './pages/DisasterAlerts.jsx'
 import ErrorPage from './pages/ErrorPage.jsx'
 import Irrigation from './pages/Irrigation.jsx'
 import Contact from './pages/Contact.jsx'
+import CropSuggestion from './pages/CropSuggestion.jsx'
 
 const router = createBrowserRouter([
   {
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
     path: '/contact',
     element: <Contact/>
   },
+  {
+    path: '/CropSuggestion',
+    element: <CropSuggestion />
+  }
 ])
 
 createRoot(document.getElementById('root')).render(

@@ -1,21 +1,22 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { FaArrowRight } from 'react-icons/fa'
+// Navbar.jsx
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { FaArrowRight } from 'react-icons/fa';
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
 
   const toggleMenu = () => {
-    setIsOpen(!isOpen)
-  }
+    setIsOpen(!isOpen);
+  };
 
   return (
-    <div className='bg-black h-14 shadow-lg mx-4 my-2 sm:mx-8 sm:my-4 rounded-full flex items-center justify-between px-4 sm:px-8 py-2'>
+    <div className='bg-black h-14 shadow-lg mx-4 my-2 sm:mx-8 sm:my-4 rounded-full flex items-center justify-between px-4 sm:px-8 py-2 fixed top-0 left-0 right-0 z-50'>
       <div className='text-white text-lg sm:text-xl'>
         <span className='text-white'>Agri</span>
         <span className='text-green-500'>Guard</span>
       </div>
-      <div className='hidden sm:flex space-x-4 text-base sm:text-lg'>
+      <div className='hidden sm:flex space-x-28 text-base sm:text-lg'>
         <Link to='/' className='text-white hover:text-green-500'>Home</Link>
         <Link to='/about' className='text-white hover:text-green-500'>About</Link>
         <Link to='/gallery' className='text-white hover:text-green-500'>Gallery</Link>
@@ -34,7 +35,7 @@ const Navbar = () => {
         </button>
       </div>
       {isOpen && (
-        <div className='sm:hidden absolute top-16 left-4 right-4 bg-black flex flex-col items-center space-y-4 py-4 rounded-lg shadow-lg'>
+        <div className='sm:hidden absolute top-16 left-4 right-4 bg-black flex flex-col items-center space-y-6 py-4 rounded-lg shadow-lg'>
           <Link to='/' className='text-white hover:text-green-500' onClick={toggleMenu}>Home</Link>
           <Link to='/about' className='text-white hover:text-green-500' onClick={toggleMenu}>About</Link>
           <Link to='/gallery' className='text-white hover:text-green-500' onClick={toggleMenu}>Gallery</Link>
@@ -45,7 +46,7 @@ const Navbar = () => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;
