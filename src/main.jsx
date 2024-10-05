@@ -11,6 +11,7 @@ import ErrorPage from './pages/ErrorPage.jsx'
 import Irrigation from './pages/Irrigation.jsx'
 import Contact from './pages/Contact.jsx'
 import CropSuggestion from './pages/CropSuggestion.jsx'
+import Chatbot from './pages/Chatbot.jsx'
 
 const router = createBrowserRouter([
   {
@@ -42,7 +43,10 @@ const router = createBrowserRouter([
     path: '/CropSuggestion',
     element: <CropSuggestion />
   },
-  
+  {
+    path: '/chatbot',
+    element: <Chatbot />
+  }
 ])
 
 createRoot(document.getElementById('root')).render(
