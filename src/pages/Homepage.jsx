@@ -1,7 +1,6 @@
-// Homepage.jsx
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaSeedling, FaWater, FaExclamationTriangle, FaChartLine } from 'react-icons/fa';
+import { FaSeedling, FaWater, FaExclamationTriangle, FaChartLine, FaUserTie, FaRobot, FaTint, FaDatabase } from 'react-icons/fa';
 import Navbar from '../components/Navbar';
 import WeatherCard from '../components/WeatherCard';
 
@@ -33,11 +32,17 @@ const Homepage = () => {
           <WeatherCard />
         </div>
       </div>
-      <div className='w-full flex justify-around mt-10'>
-        <FeatureIcon icon={FaSeedling} label='Crop Recommendation' path='/CropSuggestion' />
-        <FeatureIcon icon={FaWater} label='Irrigation Requirement' path='/Irrigation' />
-        <FeatureIcon icon={FaExclamationTriangle} label='Flood Alerts' path='/DisasterAlerts' />
-        <FeatureIcon icon={FaChartLine} label='Charts' path='/Charts' />
+      <div className='w-full flex justify-center mt-10'>
+        <div className='grid grid-cols-4 gap-x-36 gap-y-6'>
+          <FeatureIcon icon={FaSeedling} label='Crop Recommendation' path='/CropSuggestion' />
+          <FeatureIcon icon={FaWater} label='Irrigation Requirement' path='/Irrigation' />
+          <FeatureIcon icon={FaExclamationTriangle} label='Flood Alerts' path='/DisasterAlerts' />
+          <FeatureIcon icon={FaChartLine} label='Charts' path='/Charts' />
+          <FeatureIcon icon={FaUserTie} label='Connect with Expert' path='/Expert' />
+          <FeatureIcon icon={FaRobot} label='AI Chatbot' path='/Chatbot' />
+          <FeatureIcon icon={FaTint} label='Water Management' path='/WaterManagement' />
+          <FeatureIcon icon={FaDatabase} label='Crop Data' path='/CropData' />
+        </div>
       </div>
     </div>
   );

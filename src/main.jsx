@@ -41,7 +41,8 @@ const router = createBrowserRouter([
   {
     path: '/CropSuggestion',
     element: <CropSuggestion />
-  }
+  },
+  
 ])
 
 createRoot(document.getElementById('root')).render(
