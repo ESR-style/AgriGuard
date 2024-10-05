@@ -12,6 +12,7 @@ import Irrigation from './pages/Irrigation.jsx'
 import Contact from './pages/Contact.jsx'
 import CropSuggestion from './pages/CropSuggestion.jsx'
 import Chatbot from './pages/Chatbot.jsx'
+import CropsData from './pages/CropsData.jsx'
 
 const router = createBrowserRouter([
   {
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
   {
     path: '/chatbot',
     element: <Chatbot />
+  },
+  {
+    path: '/cropdata',
+    element: <CropsData />
   }
 ])
 
