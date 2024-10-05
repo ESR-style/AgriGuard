@@ -4,6 +4,7 @@ import Navbar from '../components/Navbar';
 const Irrigation = () => {
   const [averagePrecipitation, setAveragePrecipitation] = useState(null);
   const [irrigationAdvice, setIrrigationAdvice] = useState('');
+  const [irrigationPercentage, setIrrigationPercentage] = useState(0);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -35,32 +36,32 @@ const Irrigation = () => {
         setAveragePrecipitation(average);
         setError(null);
 
+        let advice = '';
+        let percentage = 0;
+
         if (average < 5) {
-          setIrrigationAdvice('Increase irrigation');
+          advice = 'Increase irrigation';
+          percentage = 100 - (average / 5) * 100;
         } else if (average > 20) {
-          setIrrigationAdvice('Reduce irrigation');
+          advice = 'Reduce irrigation';
+          percentage = (average / 20) * 100;
         } else {
-          setIrrigationAdvice('Maintain current irrigation');
+          advice = 'Maintain current irrigation';
+          percentage = 50;
         }
+
+        setIrrigationAdvice(advice);
+        setIrrigationPercentage(percentage);
       } catch (err) {
         setError(err.message);
         setAveragePrecipitation(null);
         setIrrigationAdvice('');
+        setIrrigationPercentage(0);
       }
     };
 
     fetchPrecipitationData();
   }, []);
-
-  const getIcon = () => {
-    if (irrigationAdvice === 'Increase irrigation') {
-      return 'https://example.com/increase-irrigation-icon.png';
-    } else if (irrigationAdvice === 'Reduce irrigation') {
-      return 'https://example.com/reduce-irrigation-icon.png';
-    } else {
-      return 'https://example.com/maintain-irrigation-icon.png';
-    }
-  };
 
   return (
     <div className="min-h-screen pt-20 bg-gray-100 text-gray-700 font-sans flex flex-col">
@@ -73,7 +74,16 @@ const Irrigation = () => {
             <h2 className="text-white text-2xl mb-4">Average Precipitation (Last Week)</h2>
             <p className="text-white text-4xl mb-4">{averagePrecipitation !== null ? `${averagePrecipitation.toFixed(2)} mm` : 'Loading...'}</p>
             <p className="text-white text-xl mb-4">{irrigationAdvice}</p>
-            <img src={getIcon()} alt="Irrigation Icon" className="w-32 h-32 mb-4" />
+            <div className="w-full bg-gray-300 rounded-full h-6 mb-4 overflow-hidden">
+              <div
+                className="bg-blue-600 h-full rounded-full"
+                style={{
+                  width: `${irrigationPercentage}%`,
+                  transition: 'width 1s ease-in-out'
+                }}
+              ></div>
+            </div>
+            <p className="text-white text-lg text-center">Irrigation Adjustment: {irrigationPercentage.toFixed(2)}%</p>
             <p className="text-white text-lg text-center">Based on the average precipitation data collected from the last week, it is advised to {irrigationAdvice.toLowerCase()}.</p>
           </div>
         </div>
