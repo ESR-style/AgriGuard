@@ -33,7 +33,7 @@ const Homepage = () => {
         </div>
       </div>
       <div className='w-full flex justify-center mt-10'>
-        <div className='grid grid-cols-4 gap-x-36 gap-y-6'>
+        <div className='grid grid-cols-2 md:grid-cols-4 gap-x-36 gap-y-6'>
           <FeatureIcon icon={FaSeedling} label='Crop Recommendation' path='/CropSuggestion' />
           <FeatureIcon icon={FaWater} label='Irrigation Requirement' path='/Irrigation' />
           <FeatureIcon icon={FaExclamationTriangle} label='Flood Alerts' path='/DisasterAlerts' />

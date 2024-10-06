@@ -1,28 +1,107 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
-import axios from 'axios';
 
 const Gallery = () => {
-  const [images, setImages] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
 
-  useEffect(() => {
-    const fetchImages = async () => {
-      try {
-        const response = await axios.get('https://api.unsplash.com/search/photos', {
-          params: { query: 'crops', per_page: 12 },
-          headers: {
-            Authorization: `Client-ID sS3H6oENtaHP_IwWLdUazee4zEbHXX9mNTrYua72ys8`
-          }
-        });
-        setImages(response.data.results);
-      } catch (error) {
-        console.error('Error fetching images from Unsplash:', error);
-      }
-    };
-
-    fetchImages();
-  }, []);
+  const images = [
+    {
+      id: '1',
+      urls: {
+        small: 'src/assets/h1.jpg',
+        regular: 'src/assets/h1.jpg'
+      },
+      alt_description: 'Image 1 description'
+    },
+    {
+      id: '2',
+      urls: {
+        small: 'src/assets/h2.jpg',
+        regular: 'src/assets/h2.jpg'
+      },
+      alt_description: 'Image 2 description'
+    },
+    {
+      id: '3',
+      urls: {
+        small: 'src/assets/h3.jpg',
+        regular: 'src/assets/h3.jpg'
+      },
+      alt_description: 'Image 3 description'
+    },
+    {
+      id: '4',
+      urls: {
+        small: 'src/assets/h4.jpg',
+        regular: 'src/assets/h4.jpg'
+      },
+      alt_description: 'Image 4 description'
+    },
+    {
+      id: '5',
+      urls: {
+        small: 'src/assets/v5.jpg',
+        regular: 'src/assets/v5.jpg'
+      },
+      alt_description: 'Image 5 description'
+    },
+    {
+      id: '6',
+      urls: {
+        small: 'src/assets/v6.jpg',
+        regular: 'src/assets/v6.jpg'
+      },
+      alt_description: 'Image 6 description'
+    },
+    {
+      id: '7',
+      urls: {
+        small: 'src/assets/v7.jpg',
+        regular: 'src/assets/v7.jpg'
+      },
+      alt_description: 'Image 7 description'
+    },
+    {
+      id: '8',
+      urls: {
+        small: 'src/assets/v8.jpg',
+        regular: 'src/assets/v8.jpg'
+      },
+      alt_description: 'Image 8 description'
+    },
+    {
+      id: '9',
+      urls: {
+        small: 'src/assets/v9.jpg',
+        regular: 'src/assets/v9.jpg'
+      },
+      alt_description: 'Image 9 description'
+    },
+    {
+      id: '10',
+      urls: {
+        small: 'src/assets/h10.jpg',
+        regular: 'src/assets/h10.jpg'
+      },
+      alt_description: 'Image 10 description'
+    },
+    {
+      id: '11',
+      urls: {
+        small: 'src/assets/h11.jpg',
+        regular: 'src/assets/h11.jpg'
+      },
+      alt_description: 'Image 11 description'
+    },
+    {
+      id: '12',
+      urls: {
+        small: 'src/assets/h12.jpg',
+        regular: 'src/assets/h12.jpg'
+      },
+      alt_description: 'Image 12 description'
+    }
+  ];
 
   const handleClose = (e) => {
     if (e.target.classList.contains('overlay')) {
