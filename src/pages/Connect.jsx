@@ -4,24 +4,30 @@ import Navbar from '../components/Navbar';
 const experts = [
   {
     id: 1,
-    name: 'Dr. Rajesh Kumar',
+    name: 'Dr. Nishchal',
     description: 'Expert in crop management and soil health.',
     price: 100,
-    imageUrl: 'https://source.unsplash.com/random/200x200?person',
+    imageUrl: 'src/assets/nishal.jpeg',
+    phone: '+911234567890', // Add phone number
+    whatsapp: '+917019160181', // Add WhatsApp number
   },
   {
     id: 2,
-    name: 'Ms. Anjali Sharma',
+    name: 'Dr. Pratham',
     description: 'Specialist in organic farming and pest control.',
     price: 150,
-    imageUrl: 'https://source.unsplash.com/random/200x200?woman',
+    imageUrl: 'src/assets/pratham.jpeg',
+    phone: '+911234567891', // Add phone number
+    whatsapp: '+911234567891', // Add WhatsApp number
   },
   {
     id: 3,
-    name: 'Mr. Suresh Patel',
+    name: 'Mr. Madhesh',
     description: 'Veteran in irrigation techniques and water management.',
     price: 120,
-    imageUrl: 'https://source.unsplash.com/random/200x200?man',
+    imageUrl: 'src/assets/madhesh.jpeg',
+    phone: '+911234567892', // Add phone number
+    whatsapp: '+911234567892', // Add WhatsApp number
   },
 ];
 
@@ -39,12 +45,12 @@ const Connect = () => {
               <p className="text-gray-600 mb-4">{expert.description}</p>
               <p className="text-green-600 font-bold mb-4">₹{expert.price}</p>
               <div className="flex space-x-3">
-                <button className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                <a href={`tel:${expert.phone}`} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                   Call
-                </button>
-                <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                </a>
+                <a href={`https://wa.me/${expert.whatsapp}`} className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                   Chat
-                </button>
+                </a>
               </div>
             </div>
           ))}
