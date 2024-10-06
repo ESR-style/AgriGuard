@@ -44,6 +44,15 @@ const Homepage = () => {
           <FeatureIcon icon={FaDatabase} label='Crop Data' path='/CropData' />
         </div>
       </div>
+      <Footer /> {/* Add Footer */}
+    </div>
+  );
+};
+
+const Footer = () => {
+  return (
+    <div className='w-full bg-green-200 text-center p-4 mt-10'>
+      <p className='text-green-900'>&copy; 2024 AgriGuard. All rights reserved.</p>
     </div>
   );
 };

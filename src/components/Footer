@@ -1,0 +1,11 @@
+import React from 'react';
+
+const Footer = () => {
+  return (
+    <div className='w-full bg-green-200 text-center p-4 mt-10'>
+      <p className='text-green-900'>&copy; 2023 Your Company. All rights reserved.</p>
+    </div>
+  );
+};
+
+export default Footer;
