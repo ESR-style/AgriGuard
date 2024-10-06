@@ -12,6 +12,7 @@ const App = () => {
   const [moistureData, setMoistureData] = useState([]);
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
+  const [currentChart, setCurrentChart] = useState('line'); // State to manage current chart view
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
@@ -112,20 +113,20 @@ const App = () => {
       <div className="flex-grow p-5 w-full">
         <h1 className="text-center text-green-600 text-3xl mb-5">Data Dashboard</h1>
         <h2 className="text-center text-green-600 text-2xl mb-5">Precipitation Data</h2>
-        <form onSubmit={handleSubmit} className="date-form flex justify-center gap-2 mb-5">
-          <label className="flex flex-col text-gray-700">
+        <form onSubmit={handleSubmit} className="date-form flex flex-col md:flex-row justify-center gap-2 mb-5">
+          <label className="flex flex-col text-gray-700 w-full md:w-auto">
             Start Date:
             <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} required className="p-2 mt-1 border border-gray-300 bg-white text-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent" />
           </label>
-          <label className="flex flex-col text-gray-700">
+          <label className="flex flex-col text-gray-700 w-full md:w-auto">
             End Date:
             <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} required className="p-2 mt-1 border border-gray-300 bg-white text-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent" />
           </label>
-          <button type="submit" className="p-5 border-none bg-green-600 text-white text-sm cursor-pointer hover:bg-green-700 rounded-md shadow-md transition-all duration-300">Submit</button>
+          <button type="submit" className="p-5 border-none bg-green-600 text-white text-sm cursor-pointer hover:bg-green-700 rounded-md shadow-md transition-all duration-300 w-full md:w-auto">Submit</button>
         </form>
         {error && <p className="error-message text-red-500 text-center mb-5">{error}</p>}
-        <div className="grid grid-cols-2 gap-5">
-          <div className="w-full h-96 bg-black p-5 rounded-lg shadow-lg">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="w-full h-64 md:h-96 bg-black p-5 rounded-lg shadow-lg">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={chartData} className="line-chart">
                 <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
@@ -137,7 +138,7 @@ const App = () => {
               </LineChart>
             </ResponsiveContainer>
           </div>
-          <div className="w-full h-96 bg-black p-5 rounded-lg shadow-lg">
+          <div className="w-full h-64 md:h-96 bg-black p-5 rounded-lg shadow-lg">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData} className="bar-chart">
                 <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
@@ -151,20 +152,20 @@ const App = () => {
           </div>
         </div>
         <h2 className="text-center text-green-600 text-2xl mb-5">Soil Moisture Data</h2>
-        <form onSubmit={handleYearSubmit} className="year-form flex justify-center gap-2 mb-5">
-          <label className="flex flex-col text-gray-700">
+        <form onSubmit={handleYearSubmit} className="year-form flex flex-col md:flex-row justify-center gap-2 mb-5">
+          <label className="flex flex-col text-gray-700 w-full md:w-auto">
             Start Year:
             <input type="number" value={startYear} onChange={(e) => setStartYear(e.target.value)} required className="p-2 mt-1 border border-gray-300 bg-white text-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent" />
           </label>
-          <label className="flex flex-col text-gray-700">
+          <label className="flex flex-col text-gray-700 w-full md:w-auto">
             End Year:
             <input type="number" value={endYear} onChange={(e) => setEndYear(e.target.value)} required className="p-2 mt-1 border border-gray-300 bg-white text-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent" />
           </label>
-          <button type="submit" className="p-5 border-none bg-green-600 text-white text-sm cursor-pointer hover:bg-green-700 rounded-md shadow-md transition-all duration-300">Submit</button>
+          <button type="submit" className="p-5 border-none bg-green-600 text-white text-sm cursor-pointer hover:bg-green-700 rounded-md shadow-md transition-all duration-300 w-full md:w-auto">Submit</button>
         </form>
         {error && <p className="error-message text-red-500 text-center mb-5">{error}</p>}
-        <div className="grid grid-cols-2 gap-5">
-          <div className="w-full h-96 bg-black p-5 rounded-lg shadow-lg">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="w-full h-64 md:h-96 bg-black p-5 rounded-lg shadow-lg">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={moistureData} className="line-chart">
                 <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
@@ -177,7 +178,7 @@ const App = () => {
               </LineChart>
             </ResponsiveContainer>
           </div>
-          <div className="w-full h-96 bg-black p-5 rounded-lg shadow-lg">
+          <div className="w-full h-64 md:h-96 bg-black p-5 rounded-lg shadow-lg">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={moistureData} className="bar-chart">
                 <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
