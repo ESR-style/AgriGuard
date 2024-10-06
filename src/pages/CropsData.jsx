@@ -6,7 +6,8 @@ const CropsData = () => {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState('All');
-
+ 
+  
   const crops = [
     { name: 'Wheat', image: '/assets/wheat.jpeg', description: 'Wheat is a cereal grain.', waterRequirement: '500-650 mm', fullDescription: 'Wheat is a grass widely cultivated for its seed, a grain which is a worldwide staple food.' },
     { name: 'Rice', image: '/assets/rice.jpeg', description: 'Rice is a staple food.', waterRequirement: '450-700 mm', fullDescription: 'Rice is the seed of the grass species Oryza sativa or Oryza glaberrima. As a cereal grain, it is the most widely consumed staple food for a large part of the world\'s human population, especially in Asia.' },
