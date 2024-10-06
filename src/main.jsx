@@ -15,6 +15,7 @@ import Chatbot from './pages/Chatbot.jsx'
 import CropsData from './pages/CropsData.jsx'
 import Connect from './pages/Connect.jsx'
 import Gallery from './pages/Gallery.jsx'
+import WaterManagement from './pages/WaterConservation.jsx'
 
 const router = createBrowserRouter([
   {
@@ -61,6 +62,10 @@ const router = createBrowserRouter([
   {
     path: '/gallery',
     element: <Gallery />
+  },
+  {
+    path: '/WaterManagement',
+    element: <WaterManagement />
   }
 ])
 
