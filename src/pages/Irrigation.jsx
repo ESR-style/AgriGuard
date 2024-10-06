@@ -6,9 +6,27 @@ const Irrigation = () => {
   const [irrigationAdvice, setIrrigationAdvice] = useState('');
   const [irrigationPercentage, setIrrigationPercentage] = useState(0);
   const [error, setError] = useState(null);
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLatitude(position.coords.latitude);
+        setLongitude(position.coords.longitude);
+      },
+      (err) => {
+        setError('Location not available');
+      }
+    );
+  }, []);
 
   useEffect(() => {
     const fetchPrecipitationData = async () => {
+      if (latitude === null || longitude === null) {
+        return;
+      }
+
       try {
         const endDate = new Date();
         const startDate = new Date();
@@ -20,7 +38,7 @@ const Irrigation = () => {
 
         const formattedStart = formatDate(startDate);
         const formattedEnd = formatDate(endDate);
-        const url = `https://power.larc.nasa.gov/api/temporal/daily/point?start=${formattedStart}&end=${formattedEnd}&latitude=12.9326&longitude=77.6259&community=RE&parameters=PRECTOTCORR&format=JSON`;
+        const url = `https://power.larc.nasa.gov/api/temporal/daily/point?start=${formattedStart}&end=${formattedEnd}&latitude=${latitude}&longitude=${longitude}&community=RE&parameters=PRECTOTCORR&format=JSON`;
         const response = await fetch(url);
         if (!response.ok) {
           throw new Error(`Error: ${response.status}`);
@@ -61,7 +79,7 @@ const Irrigation = () => {
     };
 
     fetchPrecipitationData();
-  }, []);
+  }, [latitude, longitude]);
 
   return (
     <div className="min-h-screen pt-20 bg-gray-100 text-gray-700 font-sans flex flex-col">

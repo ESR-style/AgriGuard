@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import Navbar from '../components/Navbar';
 
@@ -10,16 +10,35 @@ const App = () => {
   const [endYear, setEndYear] = useState('');
   const [error, setError] = useState(null);
   const [moistureData, setMoistureData] = useState([]);
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLatitude(position.coords.latitude);
+        setLongitude(position.coords.longitude);
+      },
+      (err) => {
+        setError('Failed to get current location');
+      }
+    );
+  }, []);
 
   const formatDate = (date) => {
     return date.replace(/-/g, '');
   };
 
   const fetchPrecipitationData = async (start, end) => {
+    if (latitude === null || longitude === null) {
+      setError('Location not available');
+      return;
+    }
+
     try {
       const formattedStart = formatDate(start);
       const formattedEnd = formatDate(end);
-      const url = `https://power.larc.nasa.gov/api/temporal/daily/point?start=${formattedStart}&end=${formattedEnd}&latitude=12.9326&longitude=77.6259&community=RE&parameters=PRECTOTCORR&format=JSON`;
+      const url = `https://power.larc.nasa.gov/api/temporal/daily/point?start=${formattedStart}&end=${formattedEnd}&latitude=${latitude}&longitude=${longitude}&community=RE&parameters=PRECTOTCORR&format=JSON`;
       const response = await fetch(url);
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`);
@@ -43,8 +62,13 @@ const App = () => {
   };
 
   const fetchMoistureData = async (start, end) => {
+    if (latitude === null || longitude === null) {
+      setError('Location not available');
+      return;
+    }
+
     try {
-      const url = `https://power.larc.nasa.gov/api/temporal/monthly/point?start=${start}&end=${end}&latitude=13.0016&longitude=77.4598&community=AG&parameters=GWETROOT,GWETPROF&format=JSON`;
+      const url = `https://power.larc.nasa.gov/api/temporal/monthly/point?start=${start}&end=${end}&latitude=${latitude}&longitude=${longitude}&community=AG&parameters=GWETROOT,GWETPROF&format=JSON`;
       const response = await fetch(url);
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`);

@@ -9,11 +9,29 @@ const CropSuggestion = () => {
   const [avgGWETROOT, setAvgGWETROOT] = useState(null);
   const [avgGWETPROF, setAvgGWETPROF] = useState(null);
   const [avgPRECTOTCORR, setAvgPRECTOTCORR] = useState(null);
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLatitude(position.coords.latitude);
+        setLongitude(position.coords.longitude);
+      },
+      (err) => {
+        setError('Location not available');
+      }
+    );
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
+      if (latitude === null || longitude === null) {
+        return;
+      }
+
       try {
-        const url = 'https://power.larc.nasa.gov/api/temporal/monthly/point?start=2020&end=2022&latitude=13.0016&longitude=77.4598&community=AG&parameters=GWETROOT,GWETPROF,PRECTOTCORR&format=JSON';
+        const url = `https://power.larc.nasa.gov/api/temporal/monthly/point?start=2020&end=2022&latitude=${latitude}&longitude=${longitude}&community=AG&parameters=GWETROOT,GWETPROF,PRECTOTCORR&format=JSON`;
         const response = await fetch(url);
         if (!response.ok) {
           throw new Error(`Error: ${response.status}`);
@@ -70,7 +88,7 @@ const CropSuggestion = () => {
     };
 
     fetchData();
-  }, []);
+  }, [latitude, longitude]);
 
   return (
     <div className="min-h-screen pt-20 bg-white text-gray-700 font-sans flex flex-col">
