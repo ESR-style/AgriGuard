@@ -24,7 +24,7 @@ Built for the NASA Space Apps Challenge 2024, this project brings together the l
 ## How to Use 🚜
 1. **Clone the repository:**
     ```bash
-    git clone https://github.com/your-repo/agronauts.git
+    git clone  https://github.com/ESR-style/AgriGuard.git
     ```
 
 2. **Install dependencies:**
