@@ -7,7 +7,7 @@ const experts = [
     name: 'Dr. Nishchal',
     description: 'Expert in crop management and soil health.',
     price: 100,
-    imageUrl: 'src/assets/nishal.jpeg',
+    imageUrl: '/assets/nishal.jpeg',
     phone: '+911234567890', // Add phone number
     whatsapp: '+917019160181', // Add WhatsApp number
   },
@@ -16,7 +16,7 @@ const experts = [
     name: 'Dr. Pratham',
     description: 'Specialist in organic farming and pest control.',
     price: 150,
-    imageUrl: 'src/assets/pratham.jpeg',
+    imageUrl: '/assets/Pratham.jpeg',
     phone: '+911234567891', // Add phone number
     whatsapp: '+911234567891', // Add WhatsApp number
   },
@@ -25,7 +25,7 @@ const experts = [
     name: 'Mr. Madhesh',
     description: 'Veteran in irrigation techniques and water management.',
     price: 120,
-    imageUrl: 'src/assets/madhesh.jpeg',
+    imageUrl: '/assets/madhesh.jpeg',
     phone: '+911234567892', // Add phone number
     whatsapp: '+911234567892', // Add WhatsApp number
   },
