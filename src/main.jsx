@@ -16,6 +16,7 @@ import CropsData from './pages/CropsData.jsx'
 import Connect from './pages/Connect.jsx'
 import Gallery from './pages/Gallery.jsx'
 import WaterManagement from './pages/WaterConservation.jsx'
+import Disease from './pages/Disease.jsx'
 
 const router = createBrowserRouter([
   {
@@ -66,6 +67,14 @@ const router = createBrowserRouter([
   {
     path: '/WaterManagement',
     element: <WaterManagement />
+  },
+  {
+    path: '/disease-detection',
+    element: <Disease />
+  },
+  {
+    path: '*',
+    element: <ErrorPage />
   }
 ])
 

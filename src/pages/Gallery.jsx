@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../components/Navbar';
+import { FaImages, FaTimes } from 'react-icons/fa';
 
 const Gallery = () => {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -103,44 +105,87 @@ const Gallery = () => {
     }
   ];
 
-  const handleClose = (e) => {
-    if (e.target.classList.contains('overlay')) {
-      setSelectedImage(null);
-    }
-  };
-
   return (
-    <div className="min-h-screen pt-20 bg-gray-100 text-gray-700 font-sans flex flex-col">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="min-h-screen pt-20 bg-gradient-to-br from-black via-gray-900 to-black"
+    >
       <Navbar />
-      <div className="flex-grow p-5 w-full flex flex-col items-center">
-        <h1 className="text-center text-green-600 text-3xl mb-5">Gallery</h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 w-full max-w-6xl">
-          {images.map((image) => (
-            <div key={image.id} className="relative group">
+      <div className="container mx-auto px-4 py-8">
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          className="text-center mb-12"
+        >
+          <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent">
+            Farm Gallery
+          </h1>
+          <p className="text-xl text-white/60">
+            Showcase of sustainable farming practices
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-[200px]">
+          {images.map((image, index) => (
+            <motion.div
+              key={image.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              whileHover={{ scale: 1.02 }}
+              className={`relative group cursor-pointer rounded-xl overflow-hidden
+                ${image.urls.small.includes('/v') ? 'row-span-2' : 'row-span-1'}`}
+              onClick={() => setSelectedImage(image.urls.regular)}
+            >
               <img
                 src={image.urls.small}
                 alt={image.alt_description}
-                className="w-full h-full object-cover rounded-lg shadow-lg cursor-pointer transform transition-transform duration-300 hover:scale-105"
-                onClick={() => setSelectedImage(image.urls.regular)}
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                loading="lazy"
               />
-            </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                <FaImages className="text-white text-2xl" />
+              </div>
+            </motion.div>
           ))}
         </div>
-        {selectedImage && (
-          <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 overlay" onClick={handleClose}>
-            <div className="relative">
-              <button
-                className="absolute top-0 right-0 m-4 text-white text-2xl"
-                onClick={() => setSelectedImage(null)}
+
+        <AnimatePresence>
+          {selectedImage && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm"
+              onClick={() => setSelectedImage(null)}
+            >
+              <motion.div
+                initial={{ scale: 0.9 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0.9 }}
+                className="relative max-w-4xl w-full"
+                onClick={e => e.stopPropagation()}
               >
-                &times;
-              </button>
-              <img src={selectedImage} alt="Selected" className="max-w-screen max-h-screen rounded-lg" />
-            </div>
-          </div>
-        )}
+                <button
+                  className="absolute -top-12 right-0 text-white/60 hover:text-white text-4xl"
+                  onClick={() => setSelectedImage(null)}
+                >
+                  <FaTimes />
+                </button>
+                <motion.img
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  src={selectedImage}
+                  alt="Selected image"
+                  className="w-full h-auto rounded-xl shadow-2xl"
+                />
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

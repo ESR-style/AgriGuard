@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { HfInference } from '@huggingface/inference';
+import { motion } from 'framer-motion';
+import { FaPaperPlane } from 'react-icons/fa';
+import Navbar from '../components/Navbar';
 
-const inference = new HfInference('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'); 
+const inference = new HfInference('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');
 
 const Chatbot = () => {
   const [input, setInput] = useState('');
@@ -10,10 +13,7 @@ const Chatbot = () => {
 
   const limitWords = (text, maxWords) => {
     const words = text.split(' ');
-    if (words.length > maxWords) {
-      return words.slice(0, maxWords).join(' ') + '...';
-    }
-    return text;
+    return words.length > maxWords ? words.slice(0, maxWords).join(' ') + '...' : text;
   };
 
   const sendMessage = async () => {
@@ -46,44 +46,72 @@ const Chatbot = () => {
   };
 
   return (
-    <div className='flex flex-col items-center w-full h-screen bg-green-100'>
-      <nav className='w-full bg-green-700 text-white p-4'>
-        <h1
-          className='text-xl cursor-pointer'
-          onClick={() => window.location.href = '/'}
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="min-h-screen pt-20 bg-gradient-to-br from-black via-gray-900 to-black"
+    >
+      <Navbar />
+      
+      <div className="container mx-auto px-4">
+  <motion.div
+    initial={{ y: 20, opacity: 0 }}
+    animate={{ y: 0, opacity: 1 }}
+    className="text-center mb-4" // Changed from mb-8 to mb-4
+  >
+    <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-green-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
+      AI Agriculture Assistant
+    </h1>
+    <p className="text-sm text-white/60 mb-4">Ask me anything about farming and agriculture</p>
+  </motion.div>
+
+        <motion.div 
+          className="max-w-3xl mx-auto bg-gradient-to-br from-green-400/10 via-blue-500/10 to-purple-500/10 
+                     backdrop-blur-xl border border-white/10 rounded-2xl shadow-lg p-6"
         >
-          Agriculture Chatbot
-        </h1>
-      </nav>
-      <div className='flex flex-col w-full max-w-2xl h-full p-4 overflow-y-auto bg-white shadow-lg rounded-lg mt-4'>
-        <div className='flex flex-col space-y-4'>
-          {chat.map((message, index) => (
-            <div
-              key={index}
-              className={`p-3 rounded-lg ${message.role === 'user' ? 'bg-blue-100 self-end' : 'bg-gray-100 self-start'}`}
+          <div className="h-[60vh] overflow-y-auto mb-4 space-y-4">
+            {chat.map((message, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+              >
+                <div className={`max-w-[80%] p-4 rounded-2xl ${
+                  message.role === 'user' 
+                    ? 'bg-gradient-to-r from-green-400 to-blue-500 text-white' 
+                    : 'bg-white/10 text-white/90'
+                }`}>
+                  {message.content}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="flex gap-2">
+            <input
+              className="flex-grow bg-white/10 text-white border border-white/20 rounded-xl px-4 py-3
+                         focus:outline-none focus:border-green-400 focus:ring-1 focus:ring-green-400"
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Type your message..."
+              onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+            />
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="bg-gradient-to-r from-green-400 to-blue-500 text-white px-6 py-3 rounded-xl
+                         flex items-center gap-2 hover:shadow-lg hover:shadow-green-500/20"
+              onClick={sendMessage}
+              disabled={loading}
             >
-              {message.content}
-            </div>
-          ))}
-        </div>
+              {loading ? 'Sending...' : <FaPaperPlane />}
+            </motion.button>
+          </div>
+        </motion.div>
       </div>
-      <div className='flex w-full max-w-2xl mt-4'>
-        <input
-          className='flex-grow border-2 border-gray-300 rounded-l-md p-2'
-          type='text'
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder='Type your message...'
-        />
-        <button
-          className='bg-green-700 text-white p-2 rounded-r-md'
-          onClick={sendMessage}
-          disabled={loading}
-        >
-          {loading ? 'Sending...' : 'Send'}
-        </button>
-      </div>
-    </div>
+    </motion.div>
   );
 };
 

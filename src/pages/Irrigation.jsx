@@ -1,112 +1,279 @@
 import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import Navbar from '../components/Navbar';
+import { FaWater, FaCloudRain, FaThermometerHalf, FaTint } from 'react-icons/fa';
 
 const Irrigation = () => {
   const [averagePrecipitation, setAveragePrecipitation] = useState(null);
-  const [irrigationAdvice, setIrrigationAdvice] = useState('');
-  const [irrigationPercentage, setIrrigationPercentage] = useState(0);
+  const [irrigationRecommendation, setIrrigationRecommendation] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
 
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setLatitude(position.coords.latitude);
-        setLongitude(position.coords.longitude);
-      },
-      (err) => {
-        setError('Location not available');
+  // Calculate irrigation needs based on precipitation
+  const calculateIrrigationNeeds = (precipitation) => {
+    // Standard water requirement for crops (mm/day)
+    const optimalWaterPerDay = 6; // Average requirement for most crops
+    const weeklyOptimal = optimalWaterPerDay * 7; // Weekly need in mm
+    
+    // Weekly precipitation already in mm
+    const actualWater = precipitation * 7;
+    
+    // Calculate deficit/surplus in mm
+    const waterDifference = weeklyOptimal - actualWater;
+    
+    return {
+      recommended: Math.max(0, waterDifference).toFixed(1), // in mm
+      status: waterDifference > 0 ? 'increase' : waterDifference < -2 ? 'decrease' : 'maintain',
+      deficit: waterDifference.toFixed(1) // in mm
+    };
+  };
+
+  const fetchData = async (latitude, longitude) => {
+    if (!latitude || !longitude) {
+      setError('Location not available');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const endDate = new Date();
+      const startDate = new Date();
+      startDate.setDate(endDate.getDate() - 7);
+
+      const formatDate = (date) => {
+        return date.toISOString().split('T')[0].replace(/-/g, '');
+      };
+
+      const formattedStart = formatDate(startDate);
+      const formattedEnd = formatDate(endDate);
+      const url = `https://power.larc.nasa.gov/api/temporal/daily/point?start=${formattedStart}&end=${formattedEnd}&latitude=${latitude}&longitude=${longitude}&community=RE&parameters=PRECTOTCORR&format=JSON`;
+      
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
       }
-    );
+      
+      const data = await response.json();
+      if (!data.properties || !data.properties.parameter || !data.properties.parameter.PRECTOTCORR) {
+        throw new Error('Invalid data format');
+      }
+      
+      const precipitationData = data.properties.parameter.PRECTOTCORR;
+      const validData = Object.values(precipitationData).filter(value => value >= 0);
+      const average = validData.reduce((sum, value) => sum + value, 0) / validData.length;
+
+      setAveragePrecipitation(average);
+      setIrrigationRecommendation(calculateIrrigationNeeds(average));
+      setError(null);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLatitude(position.coords.latitude);
+          setLongitude(position.coords.longitude);
+          fetchData(position.coords.latitude, position.coords.longitude);
+        },
+        (err) => {
+          setError('Geolocation error: ' + err.message);
+          setLoading(false);
+        }
+      );
+    } else {
+      setError('Geolocation is not supported by your browser');
+      setLoading(false);
+    }
   }, []);
 
-  useEffect(() => {
-    const fetchPrecipitationData = async () => {
-      if (latitude === null || longitude === null) {
-        return;
-      }
-
-      try {
-        const endDate = new Date();
-        const startDate = new Date();
-        startDate.setDate(endDate.getDate() - 7);
-
-        const formatDate = (date) => {
-          return date.toISOString().split('T')[0].replace(/-/g, '');
-        };
-
-        const formattedStart = formatDate(startDate);
-        const formattedEnd = formatDate(endDate);
-        const url = `https://power.larc.nasa.gov/api/temporal/daily/point?start=${formattedStart}&end=${formattedEnd}&latitude=${latitude}&longitude=${longitude}&community=RE&parameters=PRECTOTCORR&format=JSON`;
-        const response = await fetch(url);
-        if (!response.ok) {
-          throw new Error(`Error: ${response.status}`);
-        }
-        const data = await response.json();
-        if (!data.properties || !data.properties.parameter || !data.properties.parameter.PRECTOTCORR) {
-          throw new Error('Invalid data format');
-        }
-        const precipitationData = data.properties.parameter.PRECTOTCORR;
-        const validData = Object.values(precipitationData).filter(value => value >= 0);
-        const average = validData.reduce((sum, value) => sum + value, 0) / validData.length;
-
-        setAveragePrecipitation(average);
-        setError(null);
-
-        let advice = '';
-        let percentage = 0;
-
-        if (average < 5) {
-          advice = 'Increase irrigation';
-          percentage = 100 - (average / 5) * 100;
-        } else if (average > 20) {
-          advice = 'Reduce irrigation';
-          percentage = (average / 20) * 100;
-        } else {
-          advice = 'Maintain current irrigation';
-          percentage = 50;
-        }
-
-        setIrrigationAdvice(advice);
-        setIrrigationPercentage(percentage);
-      } catch (err) {
-        setError(err.message);
-        setAveragePrecipitation(null);
-        setIrrigationAdvice('');
-        setIrrigationPercentage(0);
-      }
-    };
-
-    fetchPrecipitationData();
-  }, [latitude, longitude]);
-
   return (
-    <div className="min-h-screen pt-20 bg-gray-100 text-gray-700 font-sans flex flex-col">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="min-h-screen pt-20 bg-gradient-to-br from-black via-gray-900 to-black"
+    >
       <Navbar />
-      <div className="flex-grow p-5 w-full">
-        <h1 className="text-center text-green-600 text-3xl mb-5">Irrigation Advisory Dashboard</h1>
-        {error && <p className="error-message text-red-500 text-center mb-5">{error}</p>}
-        <div className="flex flex-col items-center">
-          <div className="w-full h-auto bg-black p-10 rounded-lg shadow-lg flex flex-col items-center justify-center">
-            <h2 className="text-white text-2xl mb-4">Average Precipitation (Last Week)</h2>
-            <p className="text-white text-4xl mb-4">{averagePrecipitation !== null ? `${averagePrecipitation.toFixed(2)} mm` : 'Loading...'}</p>
-            <p className="text-white text-xl mb-4">{irrigationAdvice}</p>
-            <div className="w-full bg-gray-300 rounded-full h-6 mb-4 overflow-hidden">
-              <div
-                className="bg-blue-600 h-full rounded-full"
-                style={{
-                  width: `${irrigationPercentage}%`,
-                  transition: 'width 1s ease-in-out'
-                }}
-              ></div>
-            </div>
-            <p className="text-white text-lg text-center">Irrigation Adjustment: {irrigationPercentage.toFixed(2)}%</p>
-            <p className="text-white text-lg text-center">Based on the average precipitation data collected from the last week, it is advised to {irrigationAdvice.toLowerCase()}.</p>
+      <div className="container mx-auto px-4 py-8">
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          className="text-center mb-12"
+        >
+          <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-cyan-500 to-teal-500 bg-clip-text text-transparent">
+            Smart Irrigation System
+          </h1>
+          <p className="text-xl text-white/60">
+            Precision water management based on real-time conditions
+          </p>
+        </motion.div>
+
+        {loading ? (
+          <div className="flex justify-center items-center h-64">
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+              className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full"
+            />
           </div>
-        </div>
+        ) : error ? (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="max-w-2xl mx-auto bg-red-500/20 border border-red-500/30 rounded-lg p-4 text-red-400 text-center"
+          >
+            {error}
+          </motion.div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
+            {/* Main Recommendation Card */}
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="backdrop-blur-xl bg-white/5 rounded-2xl p-6 border border-white/10"
+            >
+              <div className="flex items-center gap-4 mb-6">
+                <FaWater className="text-4xl text-blue-500" />
+                <h2 className="text-2xl font-semibold text-white">Irrigation Recommendation</h2>
+              </div>
+
+              <div className="space-y-6">
+                <div className={`p-6 rounded-lg border ${
+                  irrigationRecommendation?.status === 'increase' 
+                    ? 'bg-blue-500/20 border-blue-500/30' 
+                    : irrigationRecommendation?.status === 'decrease'
+                    ? 'bg-yellow-500/20 border-yellow-500/30'
+                    : 'bg-green-500/20 border-green-500/30'
+                }`}>
+                  <h3 className="text-xl font-semibold text-white mb-2">
+                    {irrigationRecommendation?.status === 'increase' 
+                      ? 'Increase Irrigation'
+                      : irrigationRecommendation?.status === 'decrease'
+                      ? 'Decrease Irrigation'
+                      : 'Maintain Current Irrigation'}
+                  </h3>
+                  <p className="text-3xl font-bold text-white">
+                    {irrigationRecommendation?.recommended} L/m²
+                  </p>
+                  <p className="text-white/60 mt-2">
+                    Recommended additional water per square meter this week
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Details Card */}
+            <motion.div
+  initial={{ y: 20, opacity: 0 }}
+  animate={{ y: 0, opacity: 1 }}
+  transition={{ delay: 0.2 }}
+  className="backdrop-blur-xl bg-white/5 rounded-2xl p-6 border border-white/10"
+>
+  <div className="flex items-center gap-4 mb-6">
+    <FaWater className="text-4xl text-blue-500" />
+    <h2 className="text-2xl font-semibold text-white">Today's Watering Guide</h2>
+  </div>
+
+  <div className="space-y-6">
+    <div className={`p-6 rounded-lg border ${
+      irrigationRecommendation?.status === 'increase' 
+        ? 'bg-blue-500/20 border-blue-500/30' 
+        : irrigationRecommendation?.status === 'decrease'
+        ? 'bg-yellow-500/20 border-yellow-500/30'
+        : 'bg-green-500/20 border-green-500/30'
+    }`}>
+      <h3 className="text-xl font-semibold text-white mb-4">
+        {irrigationRecommendation?.status === 'increase' 
+          ? '⚠️ Your crops need more water'
+          : irrigationRecommendation?.status === 'decrease'
+          ? '💧 Reduce watering - soil is wet enough'
+          : '✅ Perfect water level'}
+      </h3>
+      
+      <div className="bg-black/30 rounded-lg p-4 mb-4">
+        <p className="text-lg text-white/90">
+          {irrigationRecommendation?.status === 'increase' 
+            ? `Add ${irrigationRecommendation?.recommended} liters of water per 10x10 feet area`
+            : irrigationRecommendation?.status === 'decrease'
+            ? "Skip watering today - recent rain was enough"
+            : "Normal watering today"}
+        </p>
+      </div>
+
+      <div className="space-y-2 text-white/80">
+        <p>
+          {irrigationRecommendation?.status === 'increase' 
+            ? "👉 Best time to water: Early morning or evening"
+            : irrigationRecommendation?.status === 'decrease'
+            ? "👉 Check soil moisture before watering again"
+            : "👉 Continue your regular watering schedule"}
+        </p>
+        <p className="text-sm text-white/60">
+          Based on last week's rainfall and today's weather
+        </p>
       </div>
     </div>
+  </div>
+</motion.div>
+
+{/* Replace Details Card with this simpler version */}
+<motion.div
+  initial={{ y: 20, opacity: 0 }}
+  animate={{ y: 0, opacity: 1 }}
+  transition={{ delay: 0.3 }}
+  className="backdrop-blur-xl bg-white/5 rounded-2xl p-6 border border-white/10"
+>
+  <div className="flex items-center gap-4 mb-6">
+    <FaCloudRain className="text-4xl text-cyan-500" />
+    <h2 className="text-2xl font-semibold text-white">Weather Update</h2>
+  </div>
+
+  <div className="space-y-4">
+  <div className="bg-black/30 rounded-lg p-4">
+  <h3 className="text-lg text-white mb-2">Recent Rain</h3>
+  <p className="text-2xl font-bold text-white">
+    {(averagePrecipitation * 7).toFixed(1)} mm
+    <span className="text-sm text-white/60 ml-2">of rain this week</span>
+  </p>
+  <p className="text-sm text-white/60 mt-2">
+    {averagePrecipitation * 7 > 35 // Adjusted thresholds based on typical crop needs
+      ? "Heavy rainfall week - monitor for excess water" 
+      : averagePrecipitation * 7 > 15 
+      ? "Good rainfall week - check soil moisture"
+      : "Low rainfall week - additional irrigation needed"}
+  </p>
+</div>
+
+    <div className="bg-black/30 rounded-lg p-4">
+      <h3 className="text-lg text-white mb-2">Soil Condition</h3>
+      <p className="text-xl text-white">
+        {irrigationRecommendation?.deficit > 2 
+          ? "🏜️ Soil is dry - needs water"
+          : irrigationRecommendation?.deficit < -2
+          ? "💧 Soil is wet - good moisture"
+          : "✅ Perfect moisture level"}
+      </p>
+    </div>
+  </div>
+
+  <button
+    onClick={() => fetchData(latitude, longitude)}
+    className="w-full mt-6 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-lg p-3 hover:from-cyan-600 hover:to-blue-600 transition-all"
+  >
+    Update Weather Info
+  </button>
+</motion.div>
+          </div>
+        )}
+      </div>
+    </motion.div>
   );
 };
 

@@ -1,79 +1,114 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { motion } from 'framer-motion';
 import Navbar from '../components/Navbar';
-import { FaWater, FaLeaf, FaTint, FaSeedling, FaRecycle } from 'react-icons/fa';
+import { 
+  FaTint, 
+  FaLeaf, 
+  FaCloudRain, 
+  FaTemperatureLow, 
+  FaMountain, 
+  FaRecycle 
+} from 'react-icons/fa';
 
 const WaterConservation = () => {
-  const [methods, setMethods] = useState([]);
-  const [selectedMethod, setSelectedMethod] = useState(null);
+  const conservationTips = [
+    {
+      icon: FaTint,
+      title: 'Smart Irrigation',
+      description: 'Use drip irrigation and smart controllers to optimize water usage in your fields.',
+      color: 'blue'
+    },
+    {
+      icon: FaLeaf,
+      title: 'Mulching',
+      description: 'Apply organic mulch to reduce water evaporation and maintain soil moisture.',
+      color: 'green'
+    },
+    {
+      icon: FaCloudRain,
+      title: 'Rainwater Harvesting',
+      description: 'Implement rainwater collection systems to store water for dry periods.',
+      color: 'purple'
+    },
+    {
+      icon: FaTemperatureLow,
+      title: 'Drought-Resistant Crops',
+      description: 'Choose crops that require less water and are suitable for your climate.',
+      color: 'emerald'
+    },
+    {
+      icon: FaMountain,
+      title: 'Soil Management',
+      description: 'Maintain healthy soil structure to improve water retention capacity.',
+      color: 'amber'
+    },
+    {
+      icon: FaRecycle,
+      title: 'Water Recycling',
+      description: 'Reuse greywater and implement water recycling systems in your farm.',
+      color: 'cyan'
+    }
+  ];
 
-  useEffect(() => {
-    // Hardcoded water conservation methods with descriptions
-    const methodsData = [
-      {
-        title: 'Drip Irrigation',
-        description: 'Drip irrigation involves dripping water onto the soil at very low rates (2-20 liters/hour) from a system of small diameter plastic pipes fitted with outlets called emitters or drippers.',
-        icon: FaTint
-      },
-      {
-        title: 'Rainwater Harvesting',
-        description: 'Rainwater harvesting is the accumulation and storage of rainwater for reuse on-site, rather than allowing it to run off.',
-        icon: FaWater
-      },
-      {
-        title: 'Soil Moisture Monitoring',
-        description: 'Soil moisture monitoring involves measuring the amount of water present in the soil to optimize irrigation schedules and improve water use efficiency.',
-        icon: FaLeaf
-      },
-      {
-        title: 'Mulching',
-        description: 'Mulching involves covering the soil with organic or inorganic materials to retain moisture, reduce erosion, and improve soil health.',
-        icon: FaSeedling
-      },
-      {
-        title: 'Crop Rotation',
-        description: 'Crop rotation is the practice of growing different types of crops in the same area in sequential seasons to improve soil health and reduce the need for chemical fertilizers.',
-        icon: FaRecycle
-      }
-    ];
-    setMethods(methodsData);
-  }, []);
 
   return (
-    <div className="min-h-screen pt-20 bg-green-50">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="min-h-screen pt-20 bg-gradient-to-br from-black via-gray-900 to-black"
+    >
       <Navbar />
-      <div className="p-6 font-sans">
-        <h1 className="text-3xl font-bold text-gray-800">Water Conservation Methods for Farmers</h1>
-        <section className="mt-6">
-          <h2 className="text-2xl font-semibold text-gray-700">Methods</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
-            {methods.map((method, index) => (
-              <div
-                key={index}
-                className="flex flex-col items-center p-6 bg-green-200 rounded-lg shadow-lg cursor-pointer hover:bg-green-300 transition-all duration-300"
-                onClick={() => setSelectedMethod(method)}
-              >
-                <method.icon className="text-4xl text-green-800" />
-                <h3 className="mt-2 text-xl font-bold text-green-800">{method.title}</h3>
+      <div className="container mx-auto px-4 py-8">
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          className="text-center mb-12"
+        >
+          <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-cyan-500 to-teal-500 bg-clip-text text-transparent">
+            Water Conservation
+          </h1>
+          <p className="text-xl text-white/60">
+            Sustainable practices for efficient water management in agriculture
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {conservationTips.map((tip, index) => (
+            <motion.div
+              key={index}
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: index * 0.1 }}
+              whileHover={{ y: -5 }}
+              className="backdrop-blur-xl bg-white/5 rounded-2xl p-6 border border-white/10 
+                         hover:border-white/20 transition-all duration-300"
+            >
+              <div className={`w-12 h-12 rounded-lg mb-4 flex items-center justify-center 
+                              bg-${tip.color}-500/20`}>
+                <tip.icon className={`text-2xl text-${tip.color}-400`} />
               </div>
-            ))}
-          </div>
-        </section>
-        {selectedMethod && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-              <h3 className="text-2xl font-bold text-green-800">{selectedMethod.title}</h3>
-              <p className="mt-4 text-green-900">{selectedMethod.description}</p>
-              <button
-                className="mt-6 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-                onClick={() => setSelectedMethod(null)}
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        )}
+              
+              <h3 className="text-xl font-semibold text-white mb-3">{tip.title}</h3>
+              <p className="text-white/60">{tip.description}</p>
+            </motion.div>
+          ))}
+        </div>
+
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.8 }}
+          className="mt-12 p-6 backdrop-blur-xl bg-white/5 rounded-2xl border border-white/10"
+        >
+          <h2 className="text-2xl font-semibold text-white mb-4">Why Water Conservation Matters</h2>
+          <p className="text-white/60">
+            Water conservation in agriculture is crucial for sustainable farming and environmental protection. 
+            By implementing these practices, you can reduce water waste, lower costs, and contribute to a more 
+            sustainable future for agriculture.
+          </p>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
