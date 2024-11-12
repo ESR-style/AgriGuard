@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { HfInference } from '@huggingface/inference';
 import { motion } from 'framer-motion';
 import { FaPaperPlane } from 'react-icons/fa';
+import { useEffect } from 'react';
 import Navbar from '../components/Navbar';
+
 
 const inference = new HfInference('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');
 
@@ -45,31 +47,49 @@ const Chatbot = () => {
     }
   };
 
+  useEffect(() => {
+    const setVH = () => {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    };
+
+    setVH();
+    window.addEventListener('resize', setVH);
+    window.addEventListener('orientationchange', setVH);
+
+    return () => {
+      window.removeEventListener('resize', setVH);
+      window.removeEventListener('orientationchange', setVH);
+    };
+  }, []);
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="min-h-screen pt-20 bg-gradient-to-br from-black via-gray-900 to-black"
+      className="fixed inset-0 bg-gradient-to-br from-black via-gray-900 to-black"
+      style={{ height: 'calc(var(--vh, 1vh) * 100)' }}
     >
       <Navbar />
       
-      <div className="container mx-auto px-4">
-  <motion.div
-    initial={{ y: 20, opacity: 0 }}
-    animate={{ y: 0, opacity: 1 }}
-    className="text-center mb-4" // Changed from mb-8 to mb-4
-  >
-    <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-green-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
-      AI Agriculture Assistant
-    </h1>
-    <p className="text-sm text-white/60 mb-4">Ask me anything about farming and agriculture</p>
-  </motion.div>
+      <div className="container mx-auto px-4 h-[calc(100%-5rem)] pt-20 flex flex-col">
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          className="text-center mb-4"
+        >
+          <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-green-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
+            AI Agriculture Assistant
+          </h1>
+          <p className="text-sm text-white/60">Ask me anything about farming and agriculture</p>
+        </motion.div>
 
         <motion.div 
-          className="max-w-3xl mx-auto bg-gradient-to-br from-green-400/10 via-blue-500/10 to-purple-500/10 
-                     backdrop-blur-xl border border-white/10 rounded-2xl shadow-lg p-6"
+          className="flex-1 bg-gradient-to-br from-green-400/10 via-blue-500/10 to-purple-500/10 
+                     backdrop-blur-xl border border-white/10 rounded-2xl shadow-lg 
+                     flex flex-col overflow-hidden"
         >
-          <div className="h-[60vh] overflow-y-auto mb-4 space-y-4">
+          <div className="flex-1 overflow-y-auto p-6 space-y-4">
             {chat.map((message, index) => (
               <motion.div
                 key={index}
@@ -88,26 +108,28 @@ const Chatbot = () => {
             ))}
           </div>
 
-          <div className="flex gap-2">
-            <input
-              className="flex-grow bg-white/10 text-white border border-white/20 rounded-xl px-4 py-3
-                         focus:outline-none focus:border-green-400 focus:ring-1 focus:ring-green-400"
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Type your message..."
-              onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-            />
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="bg-gradient-to-r from-green-400 to-blue-500 text-white px-6 py-3 rounded-xl
-                         flex items-center gap-2 hover:shadow-lg hover:shadow-green-500/20"
-              onClick={sendMessage}
-              disabled={loading}
-            >
-              {loading ? 'Sending...' : <FaPaperPlane />}
-            </motion.button>
+          <div className="p-4 bg-black/20 border-t border-white/10">
+            <div className="flex gap-2">
+              <input
+                className="flex-grow bg-white/10 text-white border border-white/20 rounded-xl px-4 py-3
+                           focus:outline-none focus:border-green-400 focus:ring-1 focus:ring-green-400"
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Type your message..."
+                onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+              />
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-gradient-to-r from-green-400 to-blue-500 text-white px-6 py-3 rounded-xl
+                           flex items-center gap-2 hover:shadow-lg hover:shadow-green-500/20 flex-shrink-0"
+                onClick={sendMessage}
+                disabled={loading}
+              >
+                {loading ? 'Sending...' : <FaPaperPlane />}
+              </motion.button>
+            </div>
           </div>
         </motion.div>
       </div>
